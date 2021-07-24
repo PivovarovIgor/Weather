@@ -1,10 +1,11 @@
-package ru.brauer.weather
+package ru.brauer.weather.ui
 
-import Weather
+import ru.brauer.weather.domain.Weather
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import ru.brauer.weather.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
