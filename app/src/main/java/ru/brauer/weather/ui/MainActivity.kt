@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import ru.brauer.weather.R
 import ru.brauer.weather.domain.Weather
-import ru.brauer.weather.domain.repository.PlugRepository
+import ru.brauer.weather.domain.repository.PlugWeatherRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,38 +25,45 @@ class MainActivity : AppCompatActivity() {
         someButton.setOnClickListener {
             Toast.makeText(
                 this@MainActivity,
-                "In $city temperature is $temp $weather",
+                "In $city temperature is $temp ${weather.copy()}",
                 Toast.LENGTH_LONG
             )
                 .show()
 
-            val data = repository.data;
+            val weathers = repository.weathers;
 
-            for (currentWeather in data) {
+            for (currentWeather in weathers) {
                 println("for (currentWeather in data) ${currentWeather.city} : ${currentWeather.temperature}")
             }
 
-            for (index in 1 until data.size) {
-                println("for (index in 1 until data.size) " + data[index])
+            for (index in 1 until weathers.size) {
+                println("for (index in 1 until data.size) " + weathers[index])
             }
 
-            for (index in data.size - 1 downTo 0) {
-                println("for (index in data.size - 1 downTo 0) " + data[index])
+            for (index in weathers.size - 1 downTo 0) {
+                println("for (index in data.size - 1 downTo 0) " + weathers[index])
             }
 
-            for (index in data.indices) {
-                println("for (index in data.indices) " + data[index])
+            for (index in weathers.indices) {
+                println("for (index in data.indices) " + weathers[index])
             }
 
-            for ((index, value) in data.withIndex()) {
+            for ((index, value) in weathers.withIndex()) {
                 println("for ((index, value) in data.withIndex()) $index : $value")
             }
 
-            data.forEach(::println)
+            weathers.forEach(::println)
         }
+
+        val weathersListView = findViewById<RecyclerView>(R.id.weathers_list)
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        ContextCompat.getDrawable(this, R.drawable.ic_launcher_background)
+            ?.let(divider::setDrawable)
+        weathersListView.addItemDecoration(divider)
+        weathersListView.adapter = WeatherListAdapter(repository)
     }
 
     companion object {
-        val repository = PlugRepository;
+        val repository = PlugWeatherRepository;
     }
 }

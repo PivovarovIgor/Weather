@@ -2,8 +2,8 @@ package ru.brauer.weather.domain.repository
 
 import ru.brauer.weather.domain.Weather
 
-object PlugRepository : IRepository {
-    override val data: List<Weather>
+object PlugWeatherRepository : IWeatherRepository {
+    override val weathers: List<Weather>
         get() = listOf(
             Weather("Москва", 26),
             Weather("Санкт-Петербург", 22),
