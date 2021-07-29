@@ -2,4 +2,7 @@
     <string name="app_name">Weather</string>
     <string name="some_action">Some action</string>
     <string name="show_some_weather">Show some weather</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="update">Update</string>
 </resources>
