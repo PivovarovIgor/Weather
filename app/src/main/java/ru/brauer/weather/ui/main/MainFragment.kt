@@ -42,9 +42,11 @@ class MainFragment : Fragment() {
         val observer = Observer(::renderData)
         viewModel.liveDataToObserver.observe(viewLifecycleOwner, observer)
         viewModel.getWeathers()
-        binding!!.toUpdate.setOnClickListener {
-            clearShow()
-            viewModel.getWeathers()
+        binding?.apply {
+            toUpdate.setOnClickListener {
+                clearShow()
+                viewModel.getWeathers()
+            }
         }
     }
 
@@ -54,7 +56,7 @@ class MainFragment : Fragment() {
     }
 
     private fun renderData(appState: AppState) {
-        binding?.run { progressBar.visibility = View.GONE }
+        binding?.apply { progressBar.visibility = View.GONE }
         when (appState) {
             is AppState.Success -> {
                 showSuccessResult(appState.weathers)
