@@ -16,6 +16,8 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
             this@MainFragmentAdapter.notifyDataSetChanged()
         }
 
+    var onClickItemViewListener: MainFragment.OnClickItemViewListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.main_recycler_item, parent, false)
@@ -30,15 +32,19 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
         return data.size
     }
 
-    class ViewHolder(
+    inner class ViewHolder(
         private val view: View,
         private val city: TextView? = view.findViewById(R.id.caption_city),
         private val temperature: TextView? = view.findViewById(R.id.temperature)
     ) : RecyclerView.ViewHolder(view) {
 
+        private lateinit var weather: Weather
+
         fun bind(weather: Weather) {
+            this.weather = weather
             city?.apply { text = weather.city.name }
             temperature?.apply { text = weather.temperature.toString() }
+            view.setOnClickListener{ onClickItemViewListener?.onClickItemView(weather) }
         }
     }
 }

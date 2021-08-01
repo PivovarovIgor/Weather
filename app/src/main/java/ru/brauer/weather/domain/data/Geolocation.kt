@@ -1,3 +1,7 @@
 package ru.brauer.weather.domain.data
 
-data class Geolocation(val lat: Double, val lon: Double)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Geolocation(val lat: Double, val lon: Double) : Parcelable

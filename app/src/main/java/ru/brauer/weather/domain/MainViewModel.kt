@@ -27,7 +27,6 @@ class MainViewModel(private val repository: IWeatherRepository = PlugWeatherRepo
             }
             liveDataToObserver.postValue(appState)
         }.start()
-
     }
 
     private fun getGeolocationsFromPreference(): List<Geolocation> {

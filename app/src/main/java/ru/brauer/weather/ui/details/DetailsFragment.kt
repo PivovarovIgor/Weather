@@ -11,7 +11,14 @@ import ru.brauer.weather.domain.data.Weather
 class DetailsFragment : Fragment() {
 
     companion object {
+        private const val KEY_WEATHER = "KEY_WEATHER"
+
         fun newInstance(weather: Weather) = DetailsFragment()
+            .apply {
+                val bundle = Bundle()
+                bundle.putParcelable(KEY_WEATHER, weather)
+                arguments = bundle
+            }
     }
 
     private var _binding: FragmentDetailsBinding? = null
@@ -25,9 +32,24 @@ class DetailsFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val weather: Weather? = arguments?.getParcelable(KEY_WEATHER)
+        weather?.also(::renderData)
+    }
+
+    private fun renderData(weather: Weather) {
+        binding?.apply {
+            captionCity.text = weather.city.name
+            temperature.text = weather.temperature.toString()
+            feelsLike.text = weather.feelsLike.toString()
+            pressure.text = weather.pressure.toString()
+            windSpeed.text = weather.windSpeed.toString()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }

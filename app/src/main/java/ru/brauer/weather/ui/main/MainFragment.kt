@@ -1,10 +1,12 @@
 package ru.brauer.weather.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -13,6 +15,7 @@ import ru.brauer.weather.databinding.FragmentMainBinding
 import ru.brauer.weather.domain.AppState
 import ru.brauer.weather.domain.MainViewModel
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.ui.details.DetailsFragment
 
 class MainFragment : Fragment() {
 
@@ -21,6 +24,11 @@ class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MainFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,23 +47,38 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val observer = Observer(::renderData)
         adapter = MainFragmentAdapter()
+        adapter.onClickItemViewListener = object : OnClickItemViewListener {
+            override fun onClickItemView(weather: Weather) {
+                showDetail(weather)
+            }
+        }
         binding?.apply { listOfWeathers.adapter = adapter }
         viewModel.liveDataToObserver.observe(viewLifecycleOwner, observer)
-        viewModel.getWeathers()
+        viewModel.liveDataToObserver.value
+            ?.let(::renderData)
+            ?: viewModel.getWeathers()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = MainFragment()
+    private fun showDetail(weather: Weather) {
+        activity?.apply {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, DetailsFragment.newInstance(weather), null)
+                .addToBackStack(null)
+                .setTransition(TRANSIT_FRAGMENT_FADE)
+                .commit()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        adapter.onClickItemViewListener = null
     }
 
     private fun renderData(appState: AppState) =
         binding?.run {
+            Log.d("MainFragment", "renderData $appState")
             progressBar.visibility = View.GONE
             when (appState) {
                 is AppState.Success -> {
@@ -80,5 +103,9 @@ class MainFragment : Fragment() {
 
     private fun showSuccessResult(weathers: List<Weather>) {
         adapter.data = weathers
+    }
+
+    interface OnClickItemViewListener {
+        fun onClickItemView(weather: Weather)
     }
 }
