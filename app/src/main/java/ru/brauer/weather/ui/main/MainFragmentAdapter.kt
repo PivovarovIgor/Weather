@@ -43,7 +43,7 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
         fun bind(weather: Weather) {
             this.weather = weather
             city?.apply { text = weather.city.name }
-            temperature?.apply { text = weather.temperature.toString() }
+            temperature?.apply { text = weather.temperature }
             view.setOnClickListener{ onClickItemViewListener?.onClickItemView(weather) }
         }
     }

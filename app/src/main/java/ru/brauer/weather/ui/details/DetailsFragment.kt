@@ -41,7 +41,7 @@ class DetailsFragment : Fragment() {
     private fun renderData(weather: Weather) {
         binding?.apply {
             captionCity.text = weather.city.name
-            temperature.text = weather.temperature.toString()
+            temperature.text = weather.temperature
             feelsLike.text = weather.feelsLike.toString()
             pressure.text = weather.pressure.toString()
             windSpeed.text = weather.windSpeed.toString()

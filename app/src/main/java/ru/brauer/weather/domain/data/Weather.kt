@@ -6,12 +6,13 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Weather(
     val city: City,
-    val temperature: Int,
+    private val _temperature: Int,
     val feelsLike: Int,
     val windSpeed: Int,
     val pressure: Int
-) : Parcelable
+) : Parcelable {
+    val temperature get() = "${if (_temperature > 0 ) "+" else ""}$_temperature\u2103"
+}
 
 fun getDefaultCity() = City("Москва", getDefaultGeolocation())
 
-fun getDefaultGeolocation() = Geolocation(55.755819, 37.617644)
