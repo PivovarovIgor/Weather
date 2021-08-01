@@ -14,5 +14,15 @@ data class Weather(
     val temperature get() = "${if (_temperature > 0 ) "+" else ""}$_temperature\u2103"
 }
 
-fun getDefaultCity() = City("Москва", getDefaultGeolocation())
+fun newRandomWeather(name: String, lat: Double, lon: Double):Weather {
+    val city = City(name, lat, lon)
+    val temp = (-10..30).shuffled().first()
+    return Weather(
+        city,
+        temp,
+        temp + (-5..5).shuffled().first(),
+        (0..15).shuffled().first(),
+        (741..748).shuffled().first()
+    )
+}
 
