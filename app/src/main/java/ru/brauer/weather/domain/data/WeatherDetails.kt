@@ -10,5 +10,15 @@ data class WeatherDetails(
     val windSpeed: Int,
     val pressure: Int
 ) : Parcelable {
-    val temperature get() = "${if (_temperature > 0 ) "+" else ""}$_temperature\u2103"
+    val temperature get() = "${if (_temperature > 0) "+" else ""}$_temperature\u2103"
+}
+
+fun newRandomWeatherDetails(): WeatherDetails {
+    val temp = (-10..30).shuffled().first()
+    return WeatherDetails(
+        temp,
+        temp + (-5..5).shuffled().first(),
+        (0..15).shuffled().first(),
+        (741..748).shuffled().first()
+    )
 }
