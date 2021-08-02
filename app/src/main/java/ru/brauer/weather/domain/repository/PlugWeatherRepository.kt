@@ -4,7 +4,7 @@ import ru.brauer.weather.domain.data.*
 
 object PlugWeatherRepository : IWeatherRepository {
 
-    override fun getWeathers(geolocations: List<Geolocation>): List<Weather> {
+    override fun getWeathers(): List<Weather> {
         (1..3).shuffled()
             .first()
             .let {
@@ -13,9 +13,7 @@ object PlugWeatherRepository : IWeatherRepository {
                 }
             }
         return listOf(
-            Weather(
-                getDefaultCity(), 18, 19, 1, 745
-            ),
+            newRandomWeather("Москва",55.755819, 37.617644),
             newRandomWeather("Санкт-Петербург", 59.939099, 30.315877),
             newRandomWeather("Калининград", 54.710162, 20.510137),
             newRandomWeather("Краснодар", 45.035470, 38.975313),

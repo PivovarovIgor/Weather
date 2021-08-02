@@ -8,4 +8,3 @@ data class City(val name: String, val geolocation: Geolocation) : Parcelable {
     constructor(name: String, lat: Double, lon: Double) : this(name, Geolocation(lat, lon))
 }
 
-fun getDefaultCity() = City("Москва", getDefaultGeolocation())
