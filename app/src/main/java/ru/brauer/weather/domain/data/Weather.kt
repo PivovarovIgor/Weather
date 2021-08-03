@@ -44,7 +44,9 @@ fun newForecastTimeOfDay(currentDate: Calendar): List<ForecastTime> {
             Calendar.getInstance().apply {
                 set(YEAR, currentDate.get(YEAR))
                 set(DAY_OF_YEAR, currentDate.get(DAY_OF_YEAR))
-                set(HOUR_OF_DAY, index * HOURS_OF_DAYS_PART )
+                set(HOUR_OF_DAY, index * HOURS_OF_DAYS_PART)
+                set(MINUTE, 0)
+                set(SECOND, 0)
             }.timeInMillis,
             newRandomWeatherDetails()
         )
