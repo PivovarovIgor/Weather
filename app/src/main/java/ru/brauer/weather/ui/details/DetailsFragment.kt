@@ -45,6 +45,7 @@ class DetailsFragment : Fragment() {
             feelsLike.text = weather.fact.feelsLike.toString()
             pressure.text = weather.fact.pressure.toString()
             windSpeed.text = weather.fact.windSpeed.toString()
+            forecastOfDays.adapter = ForecastDaysAdapter().apply { data = weather.forecast }
         }
     }
 

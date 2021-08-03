@@ -37,7 +37,7 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
             binding.apply {
                 captionCity.text = weather.city.name
                 temperature.text = weather.fact.temperature
-                root.setOnClickListener { onClickItemViewListener?.onClickItemView(weather) }
+                root.setOnClickListener { onClickItemViewListener?.onClickItemView(weather)}
             }
         }
     }
