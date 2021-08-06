@@ -2,11 +2,16 @@ package ru.brauer.weather.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import ru.brauer.weather.R
 import ru.brauer.weather.databinding.ActivityMainBinding
+import ru.brauer.weather.ui.showSnackbar
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+
+    private var messageBeforeExit: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,4 +25,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            super.onBackPressed()
+            return
+        }
+        messageBeforeExit = if (messageBeforeExit?.isShown ?: false) {
+            super.onBackPressed()
+            null
+        } else {
+            binding.root.showSnackbar(R.string.press_back_again_to_exit)
+        }
+    }
 }

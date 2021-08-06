@@ -6,6 +6,8 @@ import ru.brauer.weather.domain.repository.IWeatherRepository
 import ru.brauer.weather.domain.repository.PlugWeatherRepository
 import java.lang.Thread.sleep
 
+const val SIMULATED_DELAY = 2000L
+
 class MainViewModel(private val repository: IWeatherRepository = PlugWeatherRepository) :
     ViewModel() {
 
@@ -15,7 +17,7 @@ class MainViewModel(private val repository: IWeatherRepository = PlugWeatherRepo
 
         liveDataToObserver.value = AppState.Loading
         Thread {
-            sleep(2000)
+            sleep(SIMULATED_DELAY)
             val appState = try {
                 AppState.Success(repository.getWeathers())
             } catch (ex: Throwable) {

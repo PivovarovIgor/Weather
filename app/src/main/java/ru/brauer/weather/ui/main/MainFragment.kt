@@ -53,10 +53,10 @@ class MainFragment : Fragment() {
             }
         }
         binding?.apply { listOfWeathers.adapter = adapter }
-        viewModel.liveDataToObserver.observe(viewLifecycleOwner, observer)
-        viewModel.liveDataToObserver.value
-            ?.let(::renderData)
-            ?: viewModel.getWeathers()
+        with(viewModel.liveDataToObserver) {
+            observe(viewLifecycleOwner, observer)
+            value?.let(::renderData) ?: viewModel.getWeathers()
+        }
     }
 
     private fun showDetail(weather: Weather) {
@@ -92,10 +92,7 @@ class MainFragment : Fragment() {
                         root,
                         appState.error.message ?: "",
                         Snackbar.LENGTH_LONG
-                    )
-                        .setAction(
-                            R.string.button_refresh
-                        ) { viewModel.getWeathers() }
+                    ).setAction(R.string.button_refresh) { viewModel.getWeathers() }
                         .show()
                 }
             }
