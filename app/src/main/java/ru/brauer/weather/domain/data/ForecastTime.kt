@@ -4,4 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Geolocation(val lat: Double, val lon: Double) : Parcelable
+data class ForecastTime(
+    val time: Long,
+    val weatherDetails: WeatherDetails
+) : Parcelable

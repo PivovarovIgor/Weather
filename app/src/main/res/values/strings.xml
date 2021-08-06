@@ -3,4 +3,9 @@
     <string name="some_action">Some action</string>
     <string name="show_some_weather">Show some weather</string>
     <string name="update">Update</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_refresh">Refresh</string>
+    <string name="feel_like">feel like %s</string>
+    <string name="pressure">"pressure: %s mm Hg"</string>
+    <string name="wind_speed">"wind speed: %s m / s"</string>
 </resources>

@@ -2,6 +2,6 @@
 <resources>
     <dimen name="default_padding">8dp</dimen>
     <dimen name="text_size_city_name">30sp</dimen>
-    <dimen name="margin_default">30dp</dimen>
+    <dimen name="margin_default">3dp</dimen>
     <dimen name="text_size_temperature">35sp</dimen>
 </resources>

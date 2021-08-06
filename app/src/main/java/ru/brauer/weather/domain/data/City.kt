@@ -1,3 +1,10 @@
 package ru.brauer.weather.domain.data
 
-data class City(val name: String, val geolocation: Geolocation)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class City(val name: String, val geolocation: Geolocation) : Parcelable {
+    constructor(name: String, lat: Double, lon: Double) : this(name, Geolocation(lat, lon))
+}
+
