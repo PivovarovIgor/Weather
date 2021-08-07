@@ -2,8 +2,8 @@ package ru.brauer.weather.domain
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.brauer.weather.domain.repository.IWeatherRepository
-import ru.brauer.weather.domain.repository.PlugWeatherRepository
+import ru.brauer.weather.domain.repository.weather.IWeatherRepository
+import ru.brauer.weather.domain.repository.weather.PlugWeatherRepository
 import java.lang.Thread.sleep
 
 const val SIMULATED_DELAY = 2000L

@@ -14,8 +14,7 @@ data class Weather(
 
 private const val DAYS_OF_FORECAST = 7
 
-fun newRandomWeather(name: String, lat: Double, lon: Double): Weather {
-    val city = City(name, lat, lon)
+fun newRandomWeather(city: City): Weather {
 
     val currentDay = Calendar.getInstance()
     val forecast = mutableListOf<ForecastDate>()

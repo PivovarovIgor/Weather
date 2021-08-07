@@ -1,4 +1,4 @@
-package ru.brauer.weather.domain.repository
+package ru.brauer.weather.domain.repository.weather
 
 import ru.brauer.weather.domain.data.Weather
 
