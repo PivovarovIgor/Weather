@@ -8,6 +8,7 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 private const val API_KEY = "8c3fb8d9-af51-4a40-b4dc-dc5b972734e0"
+private const val YANDEX_WEATHER_URL = "https://api.weather.yandex.ru/v2/forecast"
 
 object YandexWeatherRepository : IWeatherRepository {
     override fun getWeathers(): List<Weather> = CityRepository.cities.mapNotNull(::loadWeather)
@@ -18,7 +19,7 @@ object YandexWeatherRepository : IWeatherRepository {
         var weatherRawData: Map<String, *>? = null
 
         val uri =
-            URL("https://api.weather.yandex.ru/v2/forecast?lat=${city.geolocation.lat}&lon=${city.geolocation.lon}")
+            URL(YANDEX_WEATHER_URL + "?lat=${city.geolocation.lat}&lon=${city.geolocation.lon}")
         try {
             urlConnection = (uri.openConnection() as HttpsURLConnection)
                 .apply {
@@ -59,9 +60,9 @@ private fun extractWeatherFact(weatherRawData: Map<String, *>): WeatherDetails? 
     return WeatherDetails(temp.toInt(), feelsLike.toInt(), windSpeed.toInt(), pressure.toInt())
 }
 
-const val ONE_SECOND_AS_MILLISECONDS = 1000
+private const val ONE_SECOND_AS_MILLISECONDS = 1000
 
-private fun extractWeatherForecast(weatherRawData: Map<*, *>,): List<ForecastDate> {
+private fun extractWeatherForecast(weatherRawData: Map<*, *>): List<ForecastDate> {
     val forecast = weatherRawData["forecasts"] as? List<*> ?: return listOf()
     return forecast
         .mapNotNull { it as? Map<*, *> }
@@ -97,9 +98,9 @@ fun extractTimesForecast(forecastItem: Map<*, *>, date: Long): List<ForecastTime
         }
 }
 
-const val MORNING_TIME = 21600000L
-const val DAY_TIME = 43200000L
-const val EVENING_TIME = 64800000L
+private const val MORNING_TIME = 21600000L
+private const val DAY_TIME = 43200000L
+private const val EVENING_TIME = 64800000L
 
 fun extractPartsForecast(forecastItem: Map<*, *>, date: Long): List<ForecastTime> {
     val parts = forecastItem["parts"] as? Map<*, *> ?: return listOf()
