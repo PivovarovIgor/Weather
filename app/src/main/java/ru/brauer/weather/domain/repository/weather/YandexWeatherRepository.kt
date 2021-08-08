@@ -1,10 +1,7 @@
 package ru.brauer.weather.domain.repository.weather
 
 import com.google.gson.Gson
-import ru.brauer.weather.domain.data.City
-import ru.brauer.weather.domain.data.ForecastDate
-import ru.brauer.weather.domain.data.Weather
-import ru.brauer.weather.domain.data.WeatherDetails
+import ru.brauer.weather.domain.data.*
 import ru.brauer.weather.domain.repository.cities.CityRepository
 import java.io.InputStreamReader
 import java.net.URL
@@ -44,8 +41,8 @@ object YandexWeatherRepository : IWeatherRepository {
 }
 
 private fun Map<String, *>.getWeatherDataFromRawData(city: City): Weather? {
-    val fact = extractWeatherFact() ?: return null
-    val forecast = extractWeatherForecast()
+    val fact = extractWeatherFact(this) ?: return null
+    val forecast = extractWeatherForecast(this)
     return Weather(
         city,
         fact,
@@ -53,8 +50,8 @@ private fun Map<String, *>.getWeatherDataFromRawData(city: City): Weather? {
     )
 }
 
-private fun Map<String, *>.extractWeatherFact(): WeatherDetails? {
-    val fact = this["fact"] as? Map<*, *> ?: return null
+private fun extractWeatherFact(weatherRawData: Map<String, *>): WeatherDetails? {
+    val fact = weatherRawData["fact"] as? Map<*, *> ?: return null
     val temp = fact["temp"] as? Double ?: return null
     val feelsLike = fact["feels_like"] as? Double ?: return null
     val windSpeed = fact["wind_speed"] as? Double ?: return null
@@ -62,6 +59,64 @@ private fun Map<String, *>.extractWeatherFact(): WeatherDetails? {
     return WeatherDetails(temp.toInt(), feelsLike.toInt(), windSpeed.toInt(), pressure.toInt())
 }
 
-private fun Map<String, *>.extractWeatherForecast(): List<ForecastDate> {
-    return listOf()
+const val ONE_SECOND_AS_MILLISECONDS = 1000
+
+private fun extractWeatherForecast(weatherRawData: Map<*, *>,): List<ForecastDate> {
+    val forecast = weatherRawData["forecasts"] as? List<*> ?: return listOf()
+    return forecast
+        .mapNotNull { it as? Map<*, *> }
+        .mapNotNull { forecastItem ->
+            (forecastItem["date_ts"] as? Double)?.toLong()
+                ?.let { it * ONE_SECOND_AS_MILLISECONDS }
+                ?.let { date ->
+                    ForecastDate(date, extractTimesForecast(forecastItem, date))
+                }
+        }
+}
+
+fun extractTimesForecast(forecastItem: Map<*, *>, date: Long): List<ForecastTime> {
+    val hours = forecastItem["hours"] as? List<*> ?: listOf<List<*>>()
+    if (hours.isEmpty()) {
+        return extractPartsForecast(forecastItem, date)
+    }
+    return hours
+        .mapNotNull { it as? Map<*, *> }
+        .mapNotNull { hoursItem ->
+            val hour = (hoursItem["hour_ts"] as? Double)
+                ?.let { it.toLong() * ONE_SECOND_AS_MILLISECONDS }
+            val temp = (hoursItem["temp"] as? Double)?.toInt() ?: 0
+            val fellsLike = (hoursItem["feels_like"] as? Double)?.toInt() ?: 0
+            val windSpeed = (hoursItem["wind_speed"] as? Double)?.toInt() ?: 0
+            val pressure = (hoursItem["pressure_mm"] as? Double)?.toInt() ?: 0
+            if (hour != null) {
+                val weatherDetails = WeatherDetails(temp, fellsLike, windSpeed, pressure)
+                ForecastTime(hour, weatherDetails)
+            } else {
+                null
+            }
+        }
+}
+
+const val MORNING_TIME = 21600000L
+const val DAY_TIME = 43200000L
+const val EVENING_TIME = 64800000L
+
+fun extractPartsForecast(forecastItem: Map<*, *>, date: Long): List<ForecastTime> {
+    val parts = forecastItem["parts"] as? Map<*, *> ?: return listOf()
+    val result = mutableListOf<ForecastTime?>()
+    result += extractPart(parts, "night", date)
+    result += extractPart(parts, "morning", date + MORNING_TIME)
+    result += extractPart(parts, "day", date + DAY_TIME)
+    result += extractPart(parts, "evening", date + EVENING_TIME)
+    return result.filterNotNull()
+}
+
+fun extractPart(parts: Map<*, *>, partOfDayName: String, time: Long): ForecastTime? {
+    val part = parts[partOfDayName] as? Map<*, *> ?: return null
+    return WeatherDetails(
+        _temperature = (part["temp_avg"] as? Double)?.toInt() ?: 0,
+        _feelsLike = (part["feels_like"] as? Double)?.toInt() ?: 0,
+        windSpeed = (part["wind_speed"] as? Double)?.toInt() ?: 0,
+        pressure = (part["pressure_mm"] as? Double)?.toInt() ?: 0
+    ).let { weatherDetails -> ForecastTime(time, weatherDetails) }
 }
