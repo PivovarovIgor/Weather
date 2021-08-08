@@ -6,7 +6,6 @@ import ru.brauer.weather.domain.data.ForecastDate
 import ru.brauer.weather.domain.data.Weather
 import ru.brauer.weather.domain.data.WeatherDetails
 import ru.brauer.weather.domain.repository.cities.CityRepository
-import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
@@ -30,9 +29,10 @@ object YandexWeatherRepository : IWeatherRepository {
                     addRequestProperty("X-Yandex-API-Key", API_KEY)
                     readTimeout = 10000
                 }
-            val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-            val lines = bufferedReader.readLines().joinToString("\n")
-            weatherRawData = Gson().fromJson<Map<String, *>>(lines, Map::class.java)
+            weatherRawData = InputStreamReader(urlConnection.inputStream)
+                .let { reader ->
+                    Gson().fromJson<Map<String, *>>(reader, Map::class.java)
+                }
         } catch (e: Exception) {
             urlConnection?.disconnect()
             throw e
@@ -44,11 +44,8 @@ object YandexWeatherRepository : IWeatherRepository {
 }
 
 private fun Map<String, *>.getWeatherDataFromRawData(city: City): Weather? {
-    val fact = extractWeatherFact()
+    val fact = extractWeatherFact() ?: return null
     val forecast = extractWeatherForecast()
-    if (fact == null) {
-        return null
-    }
     return Weather(
         city,
         fact,
