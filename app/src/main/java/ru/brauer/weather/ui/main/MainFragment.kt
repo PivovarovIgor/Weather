@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_main.*
 import ru.brauer.weather.R
 import ru.brauer.weather.databinding.FragmentMainBinding
 import ru.brauer.weather.domain.AppState
@@ -53,10 +54,11 @@ class MainFragment : Fragment() {
             }
         }
         binding?.apply { listOfWeathers.adapter = adapter }
-        viewModel.liveDataToObserver.observe(viewLifecycleOwner, observer)
-        viewModel.liveDataToObserver.value
-            ?.let(::renderData)
-            ?: viewModel.getWeathers()
+        with(viewModel.liveDataToObserver) {
+            observe(viewLifecycleOwner, observer)
+            value?.let(::renderData) ?: viewModel.getWeathers()
+            swipe_container.setOnRefreshListener { viewModel.getWeathers() }
+        }
     }
 
     private fun showDetail(weather: Weather) {
@@ -86,16 +88,14 @@ class MainFragment : Fragment() {
                 }
                 is AppState.Loading -> {
                     progressBar.visibility = View.VISIBLE
+                    swipeContainer.isRefreshing = false
                 }
                 is AppState.Error -> {
                     Snackbar.make(
                         root,
                         appState.error.message ?: "",
                         Snackbar.LENGTH_LONG
-                    )
-                        .setAction(
-                            R.string.button_refresh
-                        ) { viewModel.getWeathers() }
+                    ).setAction(R.string.button_refresh) { viewModel.getWeathers() }
                         .show()
                 }
             }

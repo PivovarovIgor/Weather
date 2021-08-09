@@ -42,11 +42,12 @@ class DetailsFragment : Fragment() {
     private fun renderData(weather: Weather) {
         binding?.apply {
             captionCity.text = weather.city.name
-            temperature.text =  weather.fact.temperature
-            feelsLike.text = getString(R.string.feel_like,weather.fact.feelsLike)
+            temperature.text = weather.fact.temperature
+            feelsLike.text = getString(R.string.feel_like, weather.fact.feelsLike)
             pressure.text = getString(R.string.pressure, weather.fact.pressure.toString())
-            windSpeed.text = getString(R.string.wind_speed,weather.fact.windSpeed.toString())
-            forecastOfDays.adapter = ForecastDaysAdapter().apply { data = weather.forecast }
+            windSpeed.text = getString(R.string.wind_speed, weather.fact.windSpeed.toString())
+            forecastOfDays.adapter = ForecastDaysAdapter()
+                .apply { data = weather.forecast }
         }
     }
 
