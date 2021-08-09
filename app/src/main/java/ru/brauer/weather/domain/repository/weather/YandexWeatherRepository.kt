@@ -17,7 +17,7 @@ object YandexWeatherRepository : IWeatherRepository {
     private fun loadWeather(city: City): Weather? {
 
         var urlConnection: HttpsURLConnection? = null
-        var weatherRawData: Map<String, *>? = null
+        val weatherRawData: Map<String, *>?
 
         val uri =
             URL(YANDEX_WEATHER_URL + "?lat=${city.geolocation.lat}&lon=${city.geolocation.lon}")
