@@ -8,6 +8,7 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 private const val API_KEY = "8c3fb8d9-af51-4a40-b4dc-dc5b972734e0"
+private const val REQUEST_PROPERTY_KEY_API = "X-Yandex-API-Key"
 private const val YANDEX_WEATHER_URL = "https://api.weather.yandex.ru/v2/forecast"
 
 object YandexWeatherRepository : IWeatherRepository {
@@ -24,7 +25,7 @@ object YandexWeatherRepository : IWeatherRepository {
             urlConnection = (uri.openConnection() as HttpsURLConnection)
                 .apply {
                     requestMethod = "GET"
-                    addRequestProperty("X-Yandex-API-Key", API_KEY)
+                    addRequestProperty(REQUEST_PROPERTY_KEY_API, API_KEY)
                     readTimeout = 10000
                 }
             weatherRawData = InputStreamReader(urlConnection.inputStream)
