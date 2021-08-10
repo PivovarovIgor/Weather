@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
             return
         }
-        messageBeforeExit = if (messageBeforeExit?.isShown ?: false) {
+        messageBeforeExit = if (messageBeforeExit?.isShown == true) {
             super.onBackPressed()
             null
         } else {

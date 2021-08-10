@@ -2,13 +2,14 @@ package ru.brauer.weather.domain
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.brauer.weather.domain.repository.IWeatherRepository
-import ru.brauer.weather.domain.repository.PlugWeatherRepository
+import ru.brauer.weather.domain.repository.weather.IWeatherRepository
+import ru.brauer.weather.domain.repository.weather.PlugWeatherRepository
+import ru.brauer.weather.domain.repository.weather.YandexWeatherRepository
 import java.lang.Thread.sleep
 
 const val SIMULATED_DELAY = 2000L
 
-class MainViewModel(private val repository: IWeatherRepository = PlugWeatherRepository) :
+class MainViewModel(private val repository: IWeatherRepository = YandexWeatherRepository) :
     ViewModel() {
 
     val liveDataToObserver: MutableLiveData<AppState> = MutableLiveData()
