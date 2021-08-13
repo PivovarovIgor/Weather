@@ -1,6 +1,5 @@
 package ru.brauer.weather.ui.main
 
-import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
