@@ -1,29 +1,40 @@
 package ru.brauer.weather.ui.main
 
-import android.os.Build
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.brauer.weather.R
 import ru.brauer.weather.databinding.FragmentMainBinding
 import ru.brauer.weather.domain.AppState
-import ru.brauer.weather.domain.MainViewModel
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.ui.background.BROADCAST_RESULT_LOADING
+import ru.brauer.weather.ui.background.LOAD_SERVICE_EXTRA
+import ru.brauer.weather.ui.background.LoaderService
 import ru.brauer.weather.ui.details.DetailsFragment
 
 class MainFragment : Fragment() {
 
     private lateinit var adapter: MainFragmentAdapter
-    private lateinit var viewModel: MainViewModel
+
+    private val loadingReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                (it.getParcelableExtra<Parcelable>(LOAD_SERVICE_EXTRA) as AppState)
+                    .let(::renderData)
+            }
+        }
+    }
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding
@@ -41,15 +52,21 @@ class MainFragment : Fragment() {
         return binding?.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val observer = Observer(::renderData)
+        context?.registerReceiver(loadingReceiver, IntentFilter(BROADCAST_RESULT_LOADING))
+        initRecyclerView()
+        swipe_container.setOnRefreshListener {
+            getWeathers()
+        }
+        getWeathers()
+    }
+
+    private fun getWeathers() {
+        context?.startService(Intent(context, LoaderService::class.java))
+    }
+
+    private fun initRecyclerView() {
         adapter = MainFragmentAdapter()
         adapter.onClickItemViewListener = object : OnClickItemViewListener {
             override fun onClickItemView(weather: Weather) {
@@ -57,11 +74,6 @@ class MainFragment : Fragment() {
             }
         }
         binding?.apply { listOfWeathers.adapter = adapter }
-        with(viewModel.liveDataToObserver) {
-            observe(viewLifecycleOwner, observer)
-            value?.let(::renderData) ?: viewModel.getWeathers()
-            swipe_container.setOnRefreshListener { viewModel.getWeathers() }
-        }
     }
 
     private fun showDetail(weather: Weather) {
@@ -98,7 +110,7 @@ class MainFragment : Fragment() {
                         root,
                         appState.error.message ?: "",
                         Snackbar.LENGTH_LONG
-                    ).setAction(R.string.button_refresh) { viewModel.getWeathers() }
+                    ).setAction(R.string.button_refresh) { getWeathers() }
                         .show()
                 }
             }

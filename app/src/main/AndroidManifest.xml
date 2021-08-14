@@ -22,6 +22,8 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".ui.background.LoaderService" />
+
         <receiver android:name=".ui.main.MainBroadcastReceiver">
             <intent-filter>
                 <action

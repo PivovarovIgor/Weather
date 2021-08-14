@@ -18,7 +18,6 @@ class MainBroadcastReceiver : BroadcastReceiver() {
         val info = intent.getStringExtra(ConnectivityManager.EXTRA_EXTRA_INFO)
 
         StringBuilder().apply {
-            append("Old fashion get connectivity info.\n")
             if (noConnectivity) {
                 append("No connectivity")
             } else {
