@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.brauer.weather.R
@@ -91,6 +92,11 @@ class MainFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         adapter.onClickItemViewListener = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        context?.unregisterReceiver(loadingReceiver)
     }
 
     private fun renderData(appState: AppState) =
