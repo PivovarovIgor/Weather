@@ -9,4 +9,7 @@
     <string name="pressure">"pressure: %s mm Hg"</string>
     <string name="wind_speed">"wind speed: %s m / s"</string>
     <string name="press_back_again_to_exit">Press back again to exit</string>
+    <string name="connected">connected</string>
+    <string name="connection_lost">connection lost</string>
+    <string name="connected_to">connected to %s</string>
 </resources>

@@ -29,12 +29,12 @@ class App : Application() {
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    Toast.makeText(applicationContext, "connected", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, getString(R.string.connected) , Toast.LENGTH_LONG).show()
                 }
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
-                    Toast.makeText(applicationContext, "connection lost", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext,  getString(R.string.connection_lost), Toast.LENGTH_LONG).show()
                 }
             })
     }

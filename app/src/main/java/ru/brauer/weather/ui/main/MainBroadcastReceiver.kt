@@ -5,11 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.widget.Toast
+import ru.brauer.weather.R
 
 class MainBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        if (intent == null) {
+        if (intent == null || context == null) {
             return
         }
 
@@ -19,9 +20,9 @@ class MainBroadcastReceiver : BroadcastReceiver() {
 
         StringBuilder().apply {
             if (noConnectivity) {
-                append("No connectivity")
+                append(context.getString(R.string.connection_lost))
             } else {
-                append("Connected to $info")
+                append(context.getString(R.string.connected_to, info))
             }
             toString().also { Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
         }
