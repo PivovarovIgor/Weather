@@ -1,17 +1,15 @@
 package ru.brauer.weather.domain
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.domain.repository.ResponseErrors
 
 sealed class AppState {
 
-    @Parcelize
-    data class Success(val weathers: List<Weather>) : AppState(), Parcelable
+    data class Success(val weather: Weather) : AppState()
 
-    @Parcelize
-    class Error(val error: Throwable) : AppState(), Parcelable
+    class Error(val error: Throwable) : AppState()
 
-    @Parcelize
-    object Loading : AppState(), Parcelable
+    class ResponseWithError(val responseError: ResponseErrors) : AppState()
+
+    object Loading : AppState()
 }

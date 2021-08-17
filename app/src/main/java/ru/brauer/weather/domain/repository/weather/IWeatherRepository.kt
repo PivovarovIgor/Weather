@@ -1,7 +1,10 @@
 package ru.brauer.weather.domain.repository.weather
 
-import ru.brauer.weather.domain.data.Weather
+import retrofit2.Callback
+import ru.brauer.weather.domain.data.City
+import ru.brauer.weather.domain.repository.dto.WeatherDTO
+
 
 interface IWeatherRepository {
-    fun getWeathers(): List<Weather>
+    fun getWeather(city: City, callback: Callback<WeatherDTO>)
 }

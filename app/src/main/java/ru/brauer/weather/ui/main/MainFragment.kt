@@ -16,16 +16,19 @@ import ru.brauer.weather.databinding.FragmentMainBinding
 import ru.brauer.weather.domain.AppState
 import ru.brauer.weather.domain.MainViewModel
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.domain.repository.ResponseErrors
 import ru.brauer.weather.ui.details.DetailsFragment
 
 class MainFragment : Fragment() {
 
-    private lateinit var adapter: MainFragmentAdapter
-
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding
+
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
+    }
+    private val adapter: MainFragmentAdapter by lazy {
+        MainFragmentAdapter()
     }
 
     companion object {
@@ -47,19 +50,19 @@ class MainFragment : Fragment() {
         viewModel.liveDataToObserver.observe(viewLifecycleOwner, Observer(::renderData))
         viewModel.getCachedWeather()?.let(::renderData)
         swipe_container.setOnRefreshListener {
-            viewModel.getWeathers()
-            swipe_container.isRefreshing = false
+            reloadWeathers()
         }
     }
 
     private fun initRecyclerView() {
-        adapter = MainFragmentAdapter()
         adapter.onClickItemViewListener = object : OnClickItemViewListener {
             override fun onClickItemView(weather: Weather) {
                 showDetail(weather)
             }
         }
-        binding?.apply { listOfWeathers.adapter = adapter }
+        binding?.apply {
+            listOfWeathers.adapter = adapter
+        }
     }
 
     private fun showDetail(weather: Weather) {
@@ -85,7 +88,7 @@ class MainFragment : Fragment() {
             progressBar.visibility = View.GONE
             when (appState) {
                 is AppState.Success -> {
-                    showSuccessResult(appState.weathers)
+                    adapter.addWeather(appState.weather)
                 }
                 is AppState.Loading -> {
                     progressBar.visibility = View.VISIBLE
@@ -99,11 +102,25 @@ class MainFragment : Fragment() {
                     ).setAction(R.string.button_refresh) { viewModel.getWeathers() }
                         .show()
                 }
+                is AppState.ResponseWithError -> {
+                    val message =
+                    when (appState.responseError) {
+                        ResponseErrors.SERVER_ERROR -> getString(R.string.server_error)
+                        ResponseErrors.CORRUPTED_DATA -> getString(R.string.corrupted_data)
+                    }
+                    Snackbar.make(
+                        root,
+                        message,
+                        Snackbar.LENGTH_LONG
+                    ).setAction(R.string.button_refresh) { reloadWeathers() }
+                        .show()
+                }
             }
         }
 
-    private fun showSuccessResult(weathers: List<Weather>) {
-        adapter.data = weathers
+    private fun reloadWeathers() {
+        adapter.clear()
+        viewModel.getWeathers()
     }
 
     interface OnClickItemViewListener {

@@ -12,4 +12,6 @@
     <string name="connected">connected</string>
     <string name="connection_lost">connection lost</string>
     <string name="connected_to">connected to %s</string>
+    <string name="server_error">Server error</string>
+    <string name="corrupted_data">Corrupted data</string>
 </resources>

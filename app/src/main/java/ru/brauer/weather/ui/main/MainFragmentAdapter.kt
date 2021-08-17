@@ -8,11 +8,7 @@ import ru.brauer.weather.domain.data.Weather
 
 class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>() {
 
-    var data: List<Weather> = listOf()
-        set(value) {
-            field = value
-            this@MainFragmentAdapter.notifyDataSetChanged()
-        }
+    private val data: MutableList<Weather> = mutableListOf()
 
     var onClickItemViewListener: MainFragment.OnClickItemViewListener? = null
 
@@ -25,6 +21,23 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
     }
 
     override fun getItemCount() = data.size
+
+    fun addWeather(weather: Weather) {
+        val indexOfEntry = data.indexOf(weather)
+        if (indexOfEntry >= 0) {
+            data[indexOfEntry] = weather
+            notifyItemChanged(indexOfEntry)
+        } else {
+            data += weather
+            data.sortBy { it.city.name }
+            notifyDataSetChanged()
+        }
+    }
+
+    fun clear() {
+        data.clear()
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(private val binding: RecyclerItemMainBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -1,4 +1,4 @@
-package ru.brauer.weather.domain.repository
+package ru.brauer.weather.domain.repository.remotedatasource
 
 import retrofit2.Call
 import retrofit2.http.GET
