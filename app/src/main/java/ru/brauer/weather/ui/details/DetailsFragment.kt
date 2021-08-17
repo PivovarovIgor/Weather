@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import ru.brauer.weather.R
 import ru.brauer.weather.databinding.FragmentDetailsBinding
 import ru.brauer.weather.domain.data.Weather
@@ -48,6 +49,11 @@ class DetailsFragment : Fragment() {
             windSpeed.text = getString(R.string.wind_speed, weather.fact.windSpeed.toString())
             forecastOfDays.adapter = ForecastDaysAdapter()
                 .apply { data = weather.forecast }
+            weather.city.urlImage?.let {
+                Glide.with(this@DetailsFragment)
+                    .load(it)
+                    .into(backgroundPicture)
+            }
         }
     }
 
