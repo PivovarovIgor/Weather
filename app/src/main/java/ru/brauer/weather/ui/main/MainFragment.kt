@@ -47,8 +47,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        viewModel.getCachedWeather()?.let(adapter::setData)
         viewModel.liveDataToObserver.observe(viewLifecycleOwner, Observer(::renderData))
-        viewModel.getCachedWeather()?.let(::renderData)
         swipe_container.setOnRefreshListener {
             reloadWeathers()
         }
@@ -82,13 +82,13 @@ class MainFragment : Fragment() {
         adapter.onClickItemViewListener = null
     }
 
-    private fun renderData(appState: AppState) =
+    private fun renderData(appState: AppState?) = appState?.let { _ ->
         binding?.run {
             Log.d("MainFragment", "renderData $appState")
             progressBar.visibility = View.GONE
             when (appState) {
                 is AppState.Success -> {
-                    adapter.addWeather(appState.weather)
+                    adapter.addWeather(appState)
                 }
                 is AppState.Loading -> {
                     progressBar.visibility = View.VISIBLE
@@ -104,10 +104,10 @@ class MainFragment : Fragment() {
                 }
                 is AppState.ResponseWithError -> {
                     val message =
-                    when (appState.responseError) {
-                        ResponseErrors.SERVER_ERROR -> getString(R.string.server_error)
-                        ResponseErrors.CORRUPTED_DATA -> getString(R.string.corrupted_data)
-                    }
+                        when (appState.responseError) {
+                            ResponseErrors.SERVER_ERROR -> getString(R.string.server_error)
+                            ResponseErrors.CORRUPTED_DATA -> getString(R.string.corrupted_data)
+                        }
                     Snackbar.make(
                         root,
                         message,
@@ -117,6 +117,7 @@ class MainFragment : Fragment() {
                 }
             }
         }
+    }
 
     private fun reloadWeathers() {
         adapter.clear()

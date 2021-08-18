@@ -5,7 +5,7 @@ import ru.brauer.weather.domain.repository.ResponseErrors
 
 sealed class AppState {
 
-    data class Success(val weather: Weather) : AppState()
+    data class Success(val weather: Weather, val indexToAdd: Int, val operation: DataUpdateOperations) : AppState()
 
     class Error(val error: Throwable) : AppState()
 

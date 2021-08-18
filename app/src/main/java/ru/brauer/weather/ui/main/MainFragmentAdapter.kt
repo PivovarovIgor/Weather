@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.brauer.weather.databinding.RecyclerItemMainBinding
+import ru.brauer.weather.domain.AppState
+import ru.brauer.weather.domain.DataUpdateOperations
 import ru.brauer.weather.domain.data.Weather
 
 class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>() {
 
-    private val data: MutableList<Weather> = mutableListOf()
+    private var data: MutableList<Weather> = mutableListOf()
 
     var onClickItemViewListener: MainFragment.OnClickItemViewListener? = null
 
@@ -22,16 +24,22 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
 
     override fun getItemCount() = data.size
 
-    fun addWeather(weather: Weather) {
-        val indexOfEntry = data.indexOf(weather)
-        if (indexOfEntry >= 0) {
-            data[indexOfEntry] = weather
-            notifyItemChanged(indexOfEntry)
-        } else {
-            data += weather
-            data.sortBy { it.city.name }
-            notifyDataSetChanged()
+    fun addWeather(dataToUpdate: AppState.Success) {
+        with(dataToUpdate) {
+            if (operation == DataUpdateOperations.UPDATE) {
+                data[indexToAdd] = weather
+                notifyItemChanged(indexToAdd)
+            } else {
+                data.add(indexToAdd, weather)
+                notifyItemInserted(indexToAdd)
+            }
         }
+    }
+
+    fun setData(weathers: List<Weather>) {
+        data.clear()
+        data += weathers
+        notifyDataSetChanged()
     }
 
     fun clear() {
