@@ -2,17 +2,19 @@ package ru.brauer.weather.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import ru.brauer.weather.R
 import ru.brauer.weather.databinding.RecyclerItemMainBinding
 import ru.brauer.weather.domain.AppState
 import ru.brauer.weather.domain.DataUpdateOperations
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.ui.main.details.DetailsFragment
 
 class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>() {
 
     private var data: MutableList<Weather> = mutableListOf()
-
-    var onClickItemViewListener: MainFragment.OnClickItemViewListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         RecyclerItemMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -54,7 +56,12 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
             binding.apply {
                 captionCity.text = weather.city.name
                 temperature.text = weather.fact.temperature
-                root.setOnClickListener { onClickItemViewListener?.onClickItemView(weather) }
+                root.setOnClickListener {
+                    val bundle = bundleOf(DetailsFragment.KEY_WEATHER to weather)
+                    Navigation
+                        .findNavController(binding.root)
+                        .navigate(R.id.action_navigation_home_to_navigation_details, bundle)
+                }
             }
         }
     }

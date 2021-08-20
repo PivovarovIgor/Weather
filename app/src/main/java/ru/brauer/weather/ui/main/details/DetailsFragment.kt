@@ -1,4 +1,4 @@
-package ru.brauer.weather.ui.details
+package ru.brauer.weather.ui.main.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,14 +13,7 @@ import ru.brauer.weather.domain.data.Weather
 class DetailsFragment : Fragment() {
 
     companion object {
-        private const val KEY_WEATHER = "KEY_WEATHER"
-
-        fun newInstance(weather: Weather) = DetailsFragment()
-            .apply {
-                val bundle = Bundle()
-                bundle.putParcelable(KEY_WEATHER, weather)
-                arguments = bundle
-            }
+        const val KEY_WEATHER = "KEY_WEATHER"
     }
 
     private var _binding: FragmentDetailsBinding? = null

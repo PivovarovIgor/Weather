@@ -1,4 +1,4 @@
-package ru.brauer.weather.ui.details
+package ru.brauer.weather.ui.main.details
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package ru.brauer.weather.ui.details
+package ru.brauer.weather.ui.main.details
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.brauer.weather.databinding.RecyclerItemForecastInDayBinding
 import ru.brauer.weather.domain.data.ForecastTime
 import ru.brauer.weather.ui.toTimeFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ForecastInDayAdapter : RecyclerView.Adapter<ForecastInDayAdapter.ViewHolder>() {
 

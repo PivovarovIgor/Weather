@@ -1,10 +1,12 @@
-package ru.brauer.weather.domain
+package ru.brauer.weather.ui.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.brauer.weather.domain.AppState
+import ru.brauer.weather.domain.DataUpdateOperations
 import ru.brauer.weather.domain.data.Weather
 import ru.brauer.weather.domain.repository.ResponseErrors
 import ru.brauer.weather.domain.repository.cities.CityRepository
@@ -18,7 +20,7 @@ class MainViewModel(private val repository: IWeatherRepository = YandexWeatherRe
 
     val liveDataToObserver: MutableLiveData<AppState> = MutableLiveData()
     private val _dataWeather: MutableList<Weather> = mutableListOf()
-    val dataWeather: List<Weather>
+    private val dataWeather: List<Weather>
         get() = _dataWeather
 
     fun getWeathers() {

@@ -14,4 +14,8 @@
     <string name="connected_to">connected to %s</string>
     <string name="server_error">Server error</string>
     <string name="corrupted_data">Corrupted data</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
+    <string name="weather_details">Weather details</string>
 </resources>
