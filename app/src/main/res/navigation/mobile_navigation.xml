@@ -28,6 +28,12 @@
         tools:layout="@layout/fragment_history" />
 
     <fragment
+        android:id="@+id/navigation_contacts"
+        android:name="ru.brauer.weather.ui.contacts.ContactsFragment"
+        android:label="@string/contacts"
+        tools:layout="@layout/fragment_contacts" />
+
+    <fragment
         android:id="@+id/navigation_app_settings"
         android:name="ru.brauer.weather.ui.appsettings.AppSettingsFragment"
         android:label="@string/settings"
