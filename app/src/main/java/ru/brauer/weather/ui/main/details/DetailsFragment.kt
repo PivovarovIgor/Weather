@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import ru.brauer.weather.R
 import ru.brauer.weather.databinding.FragmentDetailsBinding
@@ -16,6 +17,7 @@ class DetailsFragment : Fragment() {
         const val KEY_WEATHER = "KEY_WEATHER"
     }
 
+    private val viewModel: DetailsViewModel by navGraphViewModels(R.id.mobile_navigation)
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding
 
@@ -30,7 +32,12 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val weather: Weather? = arguments?.getParcelable(KEY_WEATHER)
-        weather?.also(::renderData)
+        weather?.let {
+            renderData(it)
+            if (savedInstanceState == null) {
+                viewModel.saveCityToDB(weather)
+            }
+        }
     }
 
     private fun renderData(weather: Weather) {

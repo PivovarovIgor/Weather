@@ -58,13 +58,13 @@ class MainFragment : Fragment() {
     private fun renderData(appState: AppState?) = appState?.let { _ ->
         binding?.run {
             Log.d("MainFragment", "renderData $appState")
-            progressBar.visibility = View.GONE
+            includeProgress.progressBar.visibility = View.GONE
             when (appState) {
                 is AppState.Success -> {
                     adapter.addWeather(appState)
                 }
                 is AppState.Loading -> {
-                    progressBar.visibility = View.VISIBLE
+                    includeProgress.progressBar.visibility = View.VISIBLE
                     swipeContainer.isRefreshing = false
                 }
                 is AppState.Error -> {

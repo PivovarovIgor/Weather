@@ -9,6 +9,12 @@ data class City(
     val geolocation: Geolocation,
     val urlImage: String?
 ) : Parcelable {
-    constructor(name: String, lat: Double, lon: Double, urlImage: String? = null) : this(name, Geolocation(lat, lon), urlImage)
+    constructor(name: String, lat: Double, lon: Double, urlImage: String? = null) : this(
+        name,
+        Geolocation(lat, lon),
+        urlImage
+    )
+
+    constructor(name: String) : this(name, Geolocation(0.0, 0.0), null)
 }
 
