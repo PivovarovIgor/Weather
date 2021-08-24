@@ -15,6 +15,10 @@
         android:icon="@drawable/ic_baseline_contact_phone_24"
         android:title="@string/contacts" />
 
+    <item android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_baseline_map_24"
+        android:title="@string/map"/>
+
     <item
         android:id="@+id/navigation_app_settings"
         android:icon="@drawable/ic_baseline_settings_applications_24"

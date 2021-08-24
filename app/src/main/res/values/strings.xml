@@ -24,4 +24,5 @@
     <string name="close">Close</string>
     <string name="grant_access">Grant access</string>
     <string name="do_not">Do not</string>
+    <string name="map">Map</string>
 </resources>

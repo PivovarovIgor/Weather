@@ -34,6 +34,12 @@
         tools:layout="@layout/fragment_contacts" />
 
     <fragment
+        android:id="@+id/navigation_map"
+        android:name="ru.brauer.weather.ui.map.MapsFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_maps"/>
+
+    <fragment
         android:id="@+id/navigation_app_settings"
         android:name="ru.brauer.weather.ui.appsettings.AppSettingsFragment"
         android:label="@string/settings"
