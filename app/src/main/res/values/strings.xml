@@ -25,4 +25,6 @@
     <string name="grant_access">Grant access</string>
     <string name="do_not">Do not</string>
     <string name="map">Map</string>
+    <string name="button_search_map">Search</string>
+    <string name="hint_address_enter">Enter a address</string>
 </resources>
