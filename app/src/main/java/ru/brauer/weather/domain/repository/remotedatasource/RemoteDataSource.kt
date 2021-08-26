@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.brauer.weather.domain.repository.dto.WeatherDTO
 
-private const val API_KEY = "8c3fb8d9-af51-4a40-b4dc-dc5b972734e0"
+private const val API_KEY = "c0f0b888-09ed-4a51-94cf-65da85454071"
 
 object RemoteDataSource {
 
