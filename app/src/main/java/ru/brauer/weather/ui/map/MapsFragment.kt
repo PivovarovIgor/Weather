@@ -17,10 +17,19 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ru.brauer.weather.R
 import ru.brauer.weather.databinding.FragmentMapsBinding
+import ru.brauer.weather.domain.data.City
 import ru.brauer.weather.domain.data.Weather
+import ru.brauer.weather.domain.repository.dto.WeatherDTO
+import ru.brauer.weather.domain.repository.weather.YandexWeatherRepository
+import ru.brauer.weather.domain.repository.weather.getWeatherDataFromRawData
 import java.io.IOException
+
+private const val ZOOM_ON_MOVE_MAP = 15f
 
 class MapsFragment : Fragment() {
 
@@ -41,6 +50,13 @@ class MapsFragment : Fragment() {
     }
 
     private fun getWeatherAsync(latLng: LatLng) {
+
+        currentWeather = null
+        currentTitle = null
+        currentLatLng = latLng
+
+        setMarker()
+
         val geocoder = Geocoder(context)
         val handler = Handler(Looper.getMainLooper())
         Thread {
@@ -48,15 +64,39 @@ class MapsFragment : Fragment() {
                 val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
                 if (addresses.isNotEmpty()) {
                     handler.post {
-                        setMarker(latLng, addresses.first().let {
-                            "${it.getAddressLine(0)}, ${it.locality}, ${it.countryName}"
-                        })
+                        addresses.first().let {
+                            currentTitle =
+                                "${it.getAddressLine(0)}, ${it.locality}, ${it.countryName}"
+                        }
+                        setMarker()
                     }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }.start()
+        getWeather(latLng)
+    }
+
+    private fun getWeather(latLng: LatLng) {
+        val city = City("", latLng.latitude, latLng.longitude)
+        YandexWeatherRepository.getWeather(
+            city,
+            object : Callback<WeatherDTO> {
+                override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
+                    val weatherDTO: WeatherDTO? = response.body()
+                    if (response.isSuccessful && weatherDTO != null) {
+                        weatherDTO.getWeatherDataFromRawData(city)?.let {
+                            currentWeather = it
+                            setMarker()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
+                    Toast.makeText(context, t.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+            })
     }
 
     override fun onCreateView(
@@ -88,7 +128,7 @@ class MapsFragment : Fragment() {
                         it.post {
                             Toast.makeText(
                                 it.context,
-                                "Location '$searchText' not found.",
+                                getString(R.string.warning_not_found_location_on_text_search, searchText),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -104,6 +144,7 @@ class MapsFragment : Fragment() {
         val location = LatLng(addresses.first().latitude, addresses.first().longitude)
         view?.post {
             setMarkerAndMoveCamera(location, searchText)
+            getWeather(location)
         }
     }
 
@@ -111,50 +152,25 @@ class MapsFragment : Fragment() {
         location: LatLng,
         searchText: String
     ) {
-        setMarker(location, searchText)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+        currentLatLng = location
+        currentTitle = searchText
+        setMarker()
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, ZOOM_ON_MOVE_MAP))
     }
 
-    private fun setMarker(
-        location: LatLng? = null,
-        titleText: String? = null,
-        weather: Weather? = null
-    ) {
-        currentMarker?.let { marker ->
-            currentWeather?.let { _ ->
-                marker.remove()
-                currentMarker = null
-                currentWeather = null
-                currentTitle = null
-                currentLatLng = null
-            }
-        }
+    private fun setMarker() {
 
-        if (location != null) {
-            currentLatLng
-        }
-        if (titleText != null) {
-            currentTitle = titleText
-        }
-        if (weather != null) {
-            currentWeather = weather
-        }
+        currentMarker?.let { it.remove() }
 
-        currentLatLng?.let { latLon ->
-            currentWeather?.let { weather ->
-                currentTitle?.let { title ->
-                    {
-                        currentMarker = MarkerOptions()
-                            .position(latLon)
-                            .title(title)
-                            .snippet(weather.fact.temperature)
-                            .let {
-                                map.addMarker(it)
-                            }?.also { marker ->
-                                marker.showInfoWindow()
-                            }
-                    }
-                }
+        currentMarker = MarkerOptions().apply {
+            currentLatLng?.let { position(it) }
+            currentTitle?.let { title(it) }
+            currentWeather?.let { snippet(it.fact.temperature) }
+        }.let {
+            map.addMarker(it)
+        }?.also { marker ->
+            if (currentTitle != null || currentWeather != null) {
+                marker.showInfoWindow()
             }
         }
     }
