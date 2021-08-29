@@ -15,7 +15,7 @@ private const val TAG = "MessagingService"
 
 class MessagingService : FirebaseMessagingService() {
 
-    private var notifycation_id = 0
+    private var notificationId = 0
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
@@ -61,7 +61,7 @@ class MessagingService : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             createNotificationChanel(notificationManager)
         }
-        notificationManager.notify(notifycation_id++, notificationBuilder.build())
+        notificationManager.notify(notificationId++, notificationBuilder.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
