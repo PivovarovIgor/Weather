@@ -66,8 +66,8 @@ class MessagingService : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChanel(notificationManager: NotificationManager) {
-        val name = "Channel name"
-        val descriptionText = "Channel description"
+        val name = getString(R.string.channel_name)
+        val descriptionText = getString(R.string.chanel_description)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
             description = descriptionText
