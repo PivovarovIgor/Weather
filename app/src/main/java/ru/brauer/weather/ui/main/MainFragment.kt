@@ -35,11 +35,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        viewModel.getCachedWeather()?.let(adapter::setData)
         viewModel.liveDataToObserver.observe(viewLifecycleOwner, Observer(::renderData))
+        viewModel.getCachedWeather()?.let(adapter::setData)
         binding?.let {
             it.swipeContainer.setOnRefreshListener {
                 reloadWeathers()
+                it.swipeContainer.isRefreshing = false
             }
         }
     }
@@ -65,7 +66,6 @@ class MainFragment : Fragment() {
                 }
                 is AppState.Loading -> {
                     includeProgress.progressBar.visibility = View.VISIBLE
-                    swipeContainer.isRefreshing = false
                 }
                 is AppState.Error -> {
                     Snackbar.make(

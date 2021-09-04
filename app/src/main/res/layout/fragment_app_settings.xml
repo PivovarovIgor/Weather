@@ -6,6 +6,7 @@
     tools:context=".ui.appsettings.AppSettingsFragment">
 
     <TextView
+        android:id="@+id/text_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Settings fragment" />

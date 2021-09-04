@@ -14,33 +14,36 @@ import ru.brauer.weather.ui.main.details.DetailsFragment
 
 class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>() {
 
-    private var data: MutableList<Weather> = mutableListOf()
+    private var data: MutableList<AppState.Success> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         RecyclerItemMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             .let(::ViewHolder)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position].weather)
     }
 
     override fun getItemCount() = data.size
 
     fun addWeather(dataToUpdate: AppState.Success) {
-        with(dataToUpdate) {
-            if (operation == DataUpdateOperations.UPDATE) {
-                data[indexToAdd] = weather
-                notifyItemChanged(indexToAdd)
-            } else {
-                data.add(indexToAdd, weather)
-                notifyItemInserted(indexToAdd)
-            }
+        val indexToAdd = data
+            .indexOfFirst { dataToUpdate.indexToAdd <= it.indexToAdd }
+            .let { if (it == -1) data.size else it }
+        if (dataToUpdate.operation == DataUpdateOperations.UPDATE) {
+            data[indexToAdd] = dataToUpdate
+            notifyItemChanged(indexToAdd)
+        } else {
+            data.add(indexToAdd, dataToUpdate)
+            notifyItemInserted(indexToAdd)
         }
     }
 
     fun setData(weathers: List<Weather>) {
         data.clear()
-        data += weathers
+        weathers.forEachIndexed { index, weather ->
+            data += AppState.Success(weather, index, DataUpdateOperations.ADD)
+        }
         notifyDataSetChanged()
     }
 
@@ -66,3 +69,4 @@ class MainFragmentAdapter : RecyclerView.Adapter<MainFragmentAdapter.ViewHolder>
         }
     }
 }
+
